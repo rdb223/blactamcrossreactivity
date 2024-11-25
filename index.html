@@ -4,36 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Antibiotic Cross-Reactivity Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+        }
+        select, button {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+        button {
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .success {
+            color: green;
+        }
+        .warning {
+            color: orange;
+        }
+        .danger {
+            color: red;
+        }
+    </style>
 </head>
 <body>
     <h1>Antibiotic Cross-Reactivity Checker</h1>
-    
     <div>
         <label for="drug1">Antimicrobial patient reports allergy to:</label>
         <select id="drug1"></select>
     </div>
-    
     <div>
         <label for="drug2">Antimicrobial you want to use:</label>
         <select id="drug2"></select>
     </div>
-
     <button onclick="checkCrossReactivity()">Check Cross-Reactivity</button>
-    
     <div id="result"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/rdkit/2021.09.5/rdkit.min.js"></script>
     <script>
-        let crossReactivityData;
+        let crossReactivityData = [];
 
-        // Load data from a local JSON file
+        // Load the JSON data
         fetch('cross_reactivity_analysis.json')
             .then(response => response.json())
             .then(data => {
                 crossReactivityData = data;
                 populateSelectBoxes(data);
+            })
+            .catch(error => {
+                console.error('Error loading JSON:', error);
+                document.getElementById('result').innerHTML = '<p class="danger">Failed to load data. Please try again later.</p>';
             });
 
+        // Populate dropdown menus with unique drug names
         function populateSelectBoxes(data) {
             const drug1Select = document.getElementById('drug1');
             const drug2Select = document.getElementById('drug2');
@@ -56,40 +99,33 @@
             });
         }
 
+        // Function to check cross-reactivity
         function checkCrossReactivity() {
             const drug1 = document.getElementById('drug1').value;
             const drug2 = document.getElementById('drug2').value;
             const resultDiv = document.getElementById('result');
 
+            // Find the relevant data entry
             const filteredData = crossReactivityData.find(item => item.Drug1 === drug1 && item.Drug2 === drug2);
 
             if (!filteredData) {
-                resultDiv.innerHTML = 'No data available for the selected drugs.';
+                resultDiv.innerHTML = '<p class="warning">No data available for the selected drugs.</p>';
                 return;
             }
 
             let resultText = '';
             switch (filteredData.Cross_Reactivity_Label) {
                 case 0:
-                    resultText = '<p style="color:green;"><2% chance of cross-reactivity expected.</p>';
+                    resultText = '<p class="success">&lt;2% chance of cross-reactivity expected.</p>';
                     break;
                 case 1:
-                    resultText = '<p style="color:red;">⚠️ 20-40% chance of cross-reactivity. Consider another agent or utilizing a test dose.</p>';
+                    resultText = '<p class="danger">⚠️ 20-40% chance of cross-reactivity. Consider another agent or utilizing a test dose.</p>';
                     break;
                 case 2:
-                    resultText = '<p style="color:orange;">Possible cross-reactivity.</p>';
+                    resultText = '<p class="warning">Possible cross-reactivity. Use with caution.</p>';
                     break;
                 default:
-                    resultText = '<p style="color:gray;">Unknown cross-reactivity label.</p>';
-            }
-
-            // Display Tanimoto Similarity (basic example)
-            if (filteredData.SMILES_Drug1_x && filteredData.SMILES_Drug2_x) {
-                const drug1Mol = RDKit.get_mol(filteredData.SMILES_Drug1_x);
-                const drug2Mol = RDKit.get_mol(filteredData.SMILES_Drug2_x);
-                const tanimotoSimilarity = drug1Mol.get_similarity(drug2Mol);
-                
-                resultText += `<p>Tanimoto Similarity between <strong>${drug1}</strong> and <strong>${drug2}</strong>: ${tanimotoSimilarity.toFixed(2)}</p>`;
+                    resultText = '<p class="danger">Unknown cross-reactivity label. Please verify the data.</p>';
             }
 
             resultDiv.innerHTML = resultText;
