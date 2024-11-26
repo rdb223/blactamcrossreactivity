@@ -1,5 +1,4 @@
-[
-{
+[{
   "Drug1": "amoxicillin/clavulanate",
   "SMILES_Drug1_x": "CC1([C@@H](N2[C@H](S1)[C@@H](C2=O)NC(=O)[C@@H](C3=CC=C(C=C3)O)N)C(=O)O)C.C1[C@@H]2N(C1=O)[C@H](/C(=C/CO)/O2)C(=O)[O-].[K+]",
   "Drug2": "ampicillin",
@@ -2208,8 +2207,7 @@
   "Drug2": "ampicillin/sulbactam",
   "SMILES_Drug2_x": "CC1(C(N2C(S1)C(C2=O)NC(=O)C(C3=CC=CC=C3)N)C(=O)[O-])C.CC1(C(N2C(S1(=O)=O)CC2=O)C(=O)[O-])C.[Na+].[Na+]",
   "Cross_Reactivity_Label": 2
-},
-  ]
+}]
 
  
 
