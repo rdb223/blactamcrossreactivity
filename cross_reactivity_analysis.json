@@ -2555,14 +2555,14 @@
   "Drug1": "cefepime",
   "SMILES_Drug1_x": "C[N+]1(CCCC1)CC2=C(N3[C@@H]([C@@H](C3=O)NC(=O)/C(=N\\OC)/C4=CSC(=N4)N)SC2)C(=O)[O-]",
   "Drug2": "ceftaroline",
-  "SMILES_Drug2_x": "CCO/N=C(/C1=NSC(=N1)NP(=O)(O)O)\C(=O)N[C@H]2[C@@H]3N(C2=O)C(=C(CS3)SC4=NC(=CS4)C5=CC=[N+](C=C5)C)C(=O)[O-]",
+  "SMILES_Drug2_x": "CCO/N=C(/C1=NSC(=N1)NP(=O)(O)O)\\C(=O)N[C@H]2[C@@H]3N(C2=O)C(=C(CS3)SC4=NC(=CS4)C5=CC=[N+](C=C5)C)C(=O)[O-]",
   "Cross_Reactivity_Label": 2
 },
 {
   "Drug1": "cefepime",
   "SMILES_Drug1_x": "C[N+]1(CCCC1)CC2=C(N3[C@@H]([C@@H](C3=O)NC(=O)/C(=N\\OC)/C4=CSC(=N4)N)SC2)C(=O)[O-]",
   "Drug2": "ceftazidime",
-  "SMILES_Drug2_x": "CC(C)(C(=O)O)O/N=C(/C1=CSC(=N1)N)\C(=O)N[C@H]2[C@@H]3N(C2=O)C(=C(CS3)C[N+]4=CC=CC=C4)C(=O)[O-]",
+  "SMILES_Drug2_x": "CC(C)(C(=O)O)O/N=C(/C1=CSC(=N1)N)\\C(=O)N[C@H]2[C@@H]3N(C2=O)C(=C(CS3)C[N+]4=CC=CC=C4)C(=O)[O-]",
   "Cross_Reactivity_Label": 2
 },
 {
@@ -2583,7 +2583,7 @@
   "Drug1": "cefepime",
   "SMILES_Drug1_x": "C[N+]1(CCCC1)CC2=C(N3[C@@H]([C@@H](C3=O)NC(=O)/C(=N\\OC)/C4=CSC(=N4)N)SC2)C(=O)[O-]",
   "Drug2": "cefuroxime",
-  "SMILES_Drug2_x": "CO/N=C(/C1=CC=CO1)\C(=O)N[C@H]2[C@@H]3N(C2=O)C(=C(CS3)COC(=O)N)C(=O)O",
+  "SMILES_Drug2_x": "CO/N=C(/C1=CC=CO1)\\C(=O)N[C@H]2[C@@H]3N(C2=O)C(=C(CS3)COC(=O)N)C(=O)O",
   "Cross_Reactivity_Label": 0
 },
 {
