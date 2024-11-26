@@ -6,29 +6,46 @@
     <title>Antibiotic Cross-Reactivity Checker</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 18px;
             margin: 2rem;
-            background-color: #f0f2f5;
-            font-size: 1.25rem;
+            background-color: #e9ecef;
+            color: #212529;
         }
         h1 {
-            color: #333;
+            color: #343a40;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
         }
         label {
             font-weight: bold;
+            font-size: 1.2rem;
+            display: block;
+            margin-top: 1rem;
+            color: #495057;
         }
         select, button {
+            width: 100%;
             margin: 0.5rem 0;
             padding: 0.75rem;
-            font-size: 1.25rem;
-            border-radius: 5px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            border: 1px solid #ced4da;
         }
         button {
-            cursor: pointer;
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 5px;
+            font-weight: bold;
             transition: background-color 0.3s;
         }
         button:hover {
@@ -36,40 +53,49 @@
         }
         #result {
             margin-top: 1.5rem;
-            padding: 1.5rem;
-            border-radius: 5px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 1.25rem;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
         }
         .success {
-            color: green;
+            color: #28a745;
+            background-color: #e9f7ef;
+            border: 2px solid #28a745;
         }
         .warning {
-            color: orange;
+            color: #ffc107;
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
         }
         .danger {
-            color: red;
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 2px solid #dc3545;
         }
     </style>
 </head>
 <body>
     <h1>Antibiotic Cross-Reactivity Checker</h1>
-    <div>
-        <label for="drug1">Antimicrobial patient reports allergy to:</label>
-        <select id="drug1"></select>
+    <div class="container">
+        <div>
+            <label for="drug1">Antimicrobial patient reports allergy to:</label>
+            <select id="drug1"></select>
+        </div>
+        <div>
+            <label for="drug2">Antimicrobial you want to use:</label>
+            <select id="drug2"></select>
+        </div>
+        <button onclick="checkCrossReactivity()">Check Cross-Reactivity</button>
+        <div id="result"></div>
     </div>
-    <div>
-        <label for="drug2">Antimicrobial you want to use:</label>
-        <select id="drug2"></select>
-    </div>
-    <button onclick="checkCrossReactivity()">Check Cross-Reactivity</button>
-    <div id="result"></div>
 
     <script>
         let crossReactivityData = [];
 
         // Load the JSON data
-        fetch('/static/cross_reactivity_analysis.json')
+        fetch('cross_reactivity_analysis.json')
             .then(response => response.json())
             .then(data => {
                 crossReactivityData = data;
@@ -109,23 +135,35 @@
             const drug2 = document.getElementById('drug2').value;
             const resultDiv = document.getElementById('result');
 
-            // Make AJAX POST request to Flask backend
-            fetch('/check_cross_reactivity', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ drug1: drug1, drug2: drug2 }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                let resultText = `<p class="${data.label}">${data.message}</p>`;
-                resultDiv.innerHTML = resultText;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                resultDiv.innerHTML = '<p class="danger">An error occurred while checking cross-reactivity. Please try again later.</p>';
-            });
+            // Find the relevant data entry
+            const filteredData = crossReactivityData.find(item => item.Drug1 === drug1 && item.Drug2 === drug2);
+
+            if (!filteredData) {
+                resultDiv.innerHTML = '<p class="warning">No data available for the selected drugs.</p>';
+                resultDiv.className = 'warning';
+                return;
+            }
+
+            let resultText = '';
+            switch (filteredData.Cross_Reactivity_Label) {
+                case 0:
+                    resultText = 'Less than 2% chance of cross-reactivity expected.';
+                    resultDiv.className = 'success';
+                    break;
+                case 1:
+                    resultText = '⚠️ 20-40% chance of cross-reactivity. Consider another agent or utilizing a test dose.';
+                    resultDiv.className = 'danger';
+                    break;
+                case 2:
+                    resultText = 'Possible cross-reactivity. Use with caution.';
+                    resultDiv.className = 'warning';
+                    break;
+                default:
+                    resultText = 'Unknown cross-reactivity label. Please verify the data.';
+                    resultDiv.className = 'danger';
+            }
+
+            resultDiv.innerHTML = resultText;
         }
     </script>
 </body>
